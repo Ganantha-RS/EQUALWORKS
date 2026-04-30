@@ -1,0 +1,547 @@
+# SkillBridge — Inclusive Digital Skills Platform
+### Project Documentation & Development Blueprint
+
+---
+
+## 📌 Project Overview
+
+**SkillBridge** adalah platform pembelajaran digital inklusif yang dirancang untuk memberdayakan individu dengan keterbatasan akses — baik fisik, visual, maupun ekonomi — agar dapat menguasai keterampilan digital dan terhubung dengan peluang kerja jarak jauh secara global.
+
+**Tech Stack:**
+- **Frontend:** React.js (Vite)
+- **Backend:** Laravel 12 (REST API)
+- **Database:** MySQL
+- **Styling:** Tailwind CSS (Flexbox-first layout)
+- **AI Integration:** OpenAI API / Claude API (untuk Kursus Kustom AI)
+- **Auth:** Laravel Sanctum (tanpa starter kit)
+
+---
+
+## 🎯 Fitur Utama
+
+### 1. Aksesibilitas Terintegrasi
+- Text-to-Speech (TTS) untuk pengguna tunanetra
+- Mode High Contrast untuk pengguna low vision
+- Font Size Control (S / M / L / XL)
+
+### 2. Modul Pembelajaran Keterampilan Digital
+- Kursus interaktif: Modern Web, Data Analysis, Frontend Development, dsb.
+- Progres per modul, kuiz, dan sertifikat
+- Tersedia untuk pemula hingga profesional
+
+### 3. Pembuatan Kursus Kustom Berbasis AI
+- Onboarding kuesioner (minat, tujuan, waktu belajar, gaya belajar)
+- AI merakit kurikulum personal secara otomatis
+- Kurikulum dapat diedit dan disimpan oleh pengguna
+
+### 4. Portal Pencocokan Kerja Jarak Jauh
+- Matching algoritma berbasis skill & kebutuhan aksesibilitas
+- Lowongan dari perusahaan terverifikasi inklusif
+- Filter: remote, part-time, freelance
+
+### 5. Dasbor Pelacak Proyeksi Dampak
+- Persentase peningkatan keahlian pengguna (real-time)
+- Jumlah pengguna yang terserap di dunia kerja
+- Accessibility Rating platform
+- Metrik agregat komunitas
+
+---
+
+## 🗂️ Struktur Direktori Proyek
+
+```
+skillbridge/
+├── backend/                    # Laravel 12 API
+│   ├── app/
+│   │   ├── Http/
+│   │   │   ├── Controllers/
+│   │   │   │   ├── AuthController.php
+│   │   │   │   ├── CourseController.php
+│   │   │   │   ├── ModuleController.php
+│   │   │   │   ├── AICurriculumController.php
+│   │   │   │   ├── JobMatchController.php
+│   │   │   │   └── DashboardController.php
+│   │   │   └── Middleware/
+│   │   │       └── AccessibilityPreferences.php
+│   │   ├── Models/
+│   │   │   ├── User.php
+│   │   │   ├── Course.php
+│   │   │   ├── Module.php
+│   │   │   ├── Lesson.php
+│   │   │   ├── Enrollment.php
+│   │   │   ├── UserProgress.php
+│   │   │   ├── AICurriculum.php
+│   │   │   ├── JobListing.php
+│   │   │   └── JobApplication.php
+│   │   └── Services/
+│   │       ├── AIService.php
+│   │       └── JobMatchService.php
+│   ├── database/
+│   │   └── migrations/
+│   └── routes/
+│       └── api.php
+│
+└── frontend/                   # React + Vite
+    ├── src/
+    │   ├── components/
+    │   │   ├── accessibility/
+    │   │   │   ├── AccessibilityToolbar.jsx
+    │   │   │   ├── TextToSpeech.jsx
+    │   │   │   ├── HighContrastToggle.jsx
+    │   │   │   └── FontSizeControl.jsx
+    │   │   ├── common/
+    │   │   │   ├── Navbar.jsx
+    │   │   │   ├── Footer.jsx
+    │   │   │   └── ProtectedRoute.jsx
+    │   │   ├── courses/
+    │   │   │   ├── CourseCard.jsx
+    │   │   │   ├── CourseList.jsx
+    │   │   │   ├── ModulePlayer.jsx
+    │   │   │   └── ProgressBar.jsx
+    │   │   ├── ai/
+    │   │   │   ├── OnboardingQuestionnaire.jsx
+    │   │   │   └── AICurriculumBuilder.jsx
+    │   │   ├── jobs/
+    │   │   │   ├── JobCard.jsx
+    │   │   │   └── JobMatchPortal.jsx
+    │   │   └── dashboard/
+    │   │       ├── ImpactTracker.jsx
+    │   │       └── MetricCard.jsx
+    │   ├── pages/
+    │   │   ├── Landing.jsx
+    │   │   ├── Login.jsx
+    │   │   ├── Register.jsx
+    │   │   ├── Courses.jsx
+    │   │   ├── CourseDetail.jsx
+    │   │   ├── AIBuilder.jsx
+    │   │   ├── Jobs.jsx
+    │   │   └── Dashboard.jsx
+    │   ├── context/
+    │   │   ├── AuthContext.jsx
+    │   │   └── AccessibilityContext.jsx
+    │   ├── hooks/
+    │   │   ├── useAuth.js
+    │   │   └── useAccessibility.js
+    │   ├── services/
+    │   │   └── api.js
+    │   └── App.jsx
+```
+
+---
+
+## 🗄️ Database Schema (MySQL)
+
+### Table: `users`
+| Column | Type | Notes |
+|---|---|---|
+| id | BIGINT PK | Auto-increment |
+| name | VARCHAR(255) | |
+| email | VARCHAR(255) | Unique |
+| password | VARCHAR(255) | Bcrypt hashed |
+| role | ENUM('user','admin') | Default: user |
+| accessibility_preferences | JSON | `{tts, high_contrast, font_size}` |
+| onboarding_completed | BOOLEAN | Default: false |
+| created_at / updated_at | TIMESTAMP | |
+
+### Table: `courses`
+| Column | Type | Notes |
+|---|---|---|
+| id | BIGINT PK | |
+| title | VARCHAR(255) | |
+| description | TEXT | |
+| category | VARCHAR(100) | e.g., "Modern Web", "Data Analysis" |
+| difficulty | ENUM('beginner','intermediate','advanced') | |
+| thumbnail_url | VARCHAR(255) | |
+| is_ai_generated | BOOLEAN | Default: false |
+| created_at / updated_at | TIMESTAMP | |
+
+### Table: `modules`
+| Column | Type | Notes |
+|---|---|---|
+| id | BIGINT PK | |
+| course_id | BIGINT FK → courses.id | |
+| title | VARCHAR(255) | |
+| order | INT | Urutan tampil |
+| created_at / updated_at | TIMESTAMP | |
+
+### Table: `lessons`
+| Column | Type | Notes |
+|---|---|---|
+| id | BIGINT PK | |
+| module_id | BIGINT FK → modules.id | |
+| title | VARCHAR(255) | |
+| content | LONGTEXT | HTML/Markdown |
+| video_url | VARCHAR(255) | Nullable |
+| order | INT | |
+| duration_minutes | INT | |
+| created_at / updated_at | TIMESTAMP | |
+
+### Table: `enrollments`
+| Column | Type | Notes |
+|---|---|---|
+| id | BIGINT PK | |
+| user_id | BIGINT FK → users.id | |
+| course_id | BIGINT FK → courses.id | |
+| enrolled_at | TIMESTAMP | |
+| completed_at | TIMESTAMP | Nullable |
+
+### Table: `user_progress`
+| Column | Type | Notes |
+|---|---|---|
+| id | BIGINT PK | |
+| user_id | BIGINT FK → users.id | |
+| lesson_id | BIGINT FK → lessons.id | |
+| completed | BOOLEAN | Default: false |
+| completed_at | TIMESTAMP | Nullable |
+
+### Table: `ai_curricula`
+| Column | Type | Notes |
+|---|---|---|
+| id | BIGINT PK | |
+| user_id | BIGINT FK → users.id | |
+| questionnaire_data | JSON | Input dari onboarding |
+| curriculum_data | JSON | Output AI (course structure) |
+| created_at | TIMESTAMP | |
+
+### Table: `job_listings`
+| Column | Type | Notes |
+|---|---|---|
+| id | BIGINT PK | |
+| company_name | VARCHAR(255) | |
+| title | VARCHAR(255) | |
+| description | TEXT | |
+| required_skills | JSON | Array of skill strings |
+| type | ENUM('remote','hybrid') | |
+| accessibility_friendly | BOOLEAN | |
+| apply_url | VARCHAR(255) | |
+| created_at / updated_at | TIMESTAMP | |
+
+### Table: `job_applications`
+| Column | Type | Notes |
+|---|---|---|
+| id | BIGINT PK | |
+| user_id | BIGINT FK → users.id | |
+| job_id | BIGINT FK → job_listings.id | |
+| status | ENUM('applied','reviewed','accepted','rejected') | |
+| applied_at | TIMESTAMP | |
+
+---
+
+## 🔌 API Endpoints (Laravel REST API)
+
+### Authentication (tanpa starter kit — manual Sanctum)
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/api/auth/register` | Daftarkan user baru |
+| POST | `/api/auth/login` | Login, return token |
+| POST | `/api/auth/logout` | Logout (revoke token) |
+| GET | `/api/auth/me` | Data user yang login |
+
+### Courses
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| GET | `/api/courses` | List semua kursus |
+| GET | `/api/courses/{id}` | Detail kursus |
+| GET | `/api/courses/{id}/modules` | Modul dalam kursus |
+| POST | `/api/courses/{id}/enroll` | Enroll ke kursus |
+| GET | `/api/enrollments` | Kursus yang diikuti user |
+
+### Lessons & Progress
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| GET | `/api/lessons/{id}` | Konten lesson |
+| POST | `/api/lessons/{id}/complete` | Tandai lesson selesai |
+| GET | `/api/progress/{courseId}` | Progress user di kursus |
+
+### AI Curriculum
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/api/ai/generate` | Generate kurikulum dari kuesioner |
+| GET | `/api/ai/curricula` | List kurikulum AI user |
+| GET | `/api/ai/curricula/{id}` | Detail kurikulum AI |
+
+### Job Matching
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| GET | `/api/jobs` | List semua lowongan |
+| GET | `/api/jobs/matches` | Lowongan yang cocok dengan profil user |
+| GET | `/api/jobs/{id}` | Detail lowongan |
+| POST | `/api/jobs/{id}/apply` | Apply ke lowongan |
+
+### Dashboard / Impact Metrics
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| GET | `/api/dashboard/user` | Metrik personal user |
+| GET | `/api/dashboard/impact` | Metrik dampak global platform |
+
+### Accessibility Preferences
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| PUT | `/api/user/accessibility` | Simpan preferensi aksesibilitas |
+
+---
+
+## 🖥️ Halaman Frontend (React Pages)
+
+### 1. `Landing.jsx` — Homepage
+- Hero section dengan CTA "Mulai Belajar" dan "Cari Kerja Remote"
+- Ringkasan 5 fitur utama
+- Statistik dampak (total users, jobs filled, courses available)
+- Accessibility toolbar selalu visible
+
+### 2. `Register.jsx` & `Login.jsx`
+- Form manual (tanpa starter kit)
+- Validasi client-side + server-side error handling
+- Link ke halaman login/register
+
+### 3. `Courses.jsx`
+- Grid kursus dengan filter kategori & difficulty
+- Search bar
+- Setiap card menampilkan: thumbnail, judul, kategori, difficulty, durasi
+
+### 4. `CourseDetail.jsx`
+- Deskripsi kursus lengkap
+- Accordion modul + daftar lesson
+- Tombol Enroll / Lanjutkan Belajar
+- Progress bar keseluruhan
+
+### 5. `AIBuilder.jsx`
+- Multi-step onboarding questionnaire:
+  - **Step 1:** Pilih minat keahlian (checkbox)
+  - **Step 2:** Tujuan: "Learn new skills" / "Find remote jobs"
+  - **Step 3:** Ketersediaan waktu: 1-3 jam / 3-8 jam / 8+ jam/minggu
+  - **Step 4:** Gaya belajar: Visual / Membaca / Praktek langsung
+- Loading state saat AI generate
+- Tampilkan kurikulum hasil AI dalam format card/timeline
+
+### 6. `Jobs.jsx`
+- List lowongan kerja remote
+- Filter: kategori, accessibility-friendly, tipe
+- "Your Matches" tab — algoritma matching profil user
+
+### 7. `Dashboard.jsx`
+- Kartu metrik personal: kursus selesai, skill score, jobs applied
+- Kartu metrik global: users terserap, accessibility rating
+- Progress chart tiap kursus yang diikuti
+- Notifikasi job match baru
+
+---
+
+## ♿ Accessibility Implementation
+
+### AccessibilityContext (`context/AccessibilityContext.jsx`)
+
+```jsx
+const defaultPrefs = {
+  tts: false,            // Text-to-Speech aktif
+  highContrast: false,   // Mode High Contrast
+  fontSize: 'md',        // 'sm' | 'md' | 'lg' | 'xl'
+};
+```
+
+State disimpan di:
+1. **localStorage** (persists tanpa login)
+2. **Backend** (`PUT /api/user/accessibility`) jika user login
+
+### Text-to-Speech
+- Gunakan browser native `window.speechSynthesis`
+- Trigger saat user klik tombol "Baca Halaman Ini" di toolbar
+- Highlight kata yang sedang dibaca (jika memungkinkan)
+
+### High Contrast
+- Toggle class `.high-contrast` di `<body>`
+- CSS variable override:
+  ```css
+  body.high-contrast {
+    --color-bg: #000000;
+    --color-text: #FFFFFF;
+    --color-primary: #FFFF00;
+    --color-border: #FFFFFF;
+  }
+  ```
+
+### Font Size Control
+- Toggle class di `<html>`:
+  - `text-sm` → 14px base
+  - `text-base` → 16px base (default)
+  - `text-lg` → 18px base
+  - `text-xl` → 20px base
+
+---
+
+## 🤖 AI Curriculum Generation
+
+### Flow:
+1. User mengisi `OnboardingQuestionnaire.jsx`
+2. Data dikirim ke `POST /api/ai/generate`
+3. Laravel `AIService.php` mengirim prompt ke OpenAI/Claude API
+4. Response berupa JSON struktur kurikulum
+5. Data disimpan ke tabel `ai_curricula`
+6. Frontend render kurikulum dalam bentuk modul/timeline
+
+### Contoh Prompt Template (`AIService.php`):
+```
+Kamu adalah AI kurikulum designer. Buat rencana belajar personal dalam bahasa Indonesia berdasarkan data berikut:
+
+Minat: {interests}
+Tujuan: {goal}
+Waktu tersedia per minggu: {hours_per_week} jam
+Gaya belajar: {learning_style}
+
+Berikan output dalam format JSON:
+{
+  "curriculum_title": "...",
+  "estimated_duration_weeks": N,
+  "modules": [
+    {
+      "week": N,
+      "title": "...",
+      "topics": ["...", "..."],
+      "resources": ["...", "..."]
+    }
+  ]
+}
+```
+
+---
+
+## 🔗 Job Matching Algorithm
+
+### Logic di `JobMatchService.php`:
+1. Ambil skill user dari progress kursus (kursus yang selesai = skill dikuasai)
+2. Ambil preferensi aksesibilitas user dari `users.accessibility_preferences`
+3. Bandingkan dengan `job_listings.required_skills`
+4. **Score matching** = (skills cocok / total skills dibutuhkan) × 100
+5. Filter tambahan: `accessibility_friendly = true` jika user punya kebutuhan aksesibilitas
+6. Sort by score descending
+
+---
+
+## 🔐 Authentication (Manual Laravel Sanctum)
+
+**Tanpa starter kit.** Implementasi manual:
+
+### `AuthController.php`
+```php
+// Register
+public function register(Request $request) {
+    $validated = $request->validate([...]);
+    $user = User::create([..., 'password' => bcrypt($request->password)]);
+    $token = $user->createToken('auth_token')->plainTextToken;
+    return response()->json(['token' => $token, 'user' => $user]);
+}
+
+// Login
+public function login(Request $request) {
+    if (!Auth::attempt($request->only('email', 'password'))) {
+        return response()->json(['message' => 'Invalid credentials'], 401);
+    }
+    $token = Auth::user()->createToken('auth_token')->plainTextToken;
+    return response()->json(['token' => $token, 'user' => Auth::user()]);
+}
+```
+
+### `api.js` (React — Axios instance)
+```js
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: { 'Content-Type': 'application/json' },
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+export default api;
+```
+
+---
+
+## 📐 UI/UX Design Principles
+
+- **Layout:** Flexbox-first di semua section (mengikuti preferensi developer)
+- **Theme:** Simplistic — clean, minimal, readable
+- **Colors:** Soft neutral base dengan accent warna accessibility-friendly
+- **Typography:** Mudah dibaca, ukuran responsif
+- **Image interaction:** Klik gambar → naik ke atas viewport dengan animasi; klik lagi → kembali ke posisi semula; layout flexbox tidak bergeser (absolute positioning saat expand)
+- **Mobile-first:** Semua halaman responsive
+
+---
+
+## 🚀 Development Roadmap
+
+### Phase 1 — MVP (Month 1–2)
+- [x] Setup Laravel + Sanctum (manual, no starter kit)
+- [x] Setup React + Vite + Tailwind
+- [ ] Auth: Register, Login, Logout
+- [ ] Halaman Courses + CourseDetail
+- [ ] Enroll & Progress tracking (basic)
+- [ ] Accessibility Toolbar (TTS, Contrast, Font Size)
+
+### Phase 2 — Core Features (Month 3–4)
+- [ ] AI Curriculum Builder (onboarding + generate)
+- [ ] Job Listing Portal
+- [ ] Job Matching Algorithm
+- [ ] Dashboard Metrik Personal
+
+### Phase 3 — Polish & Impact (Month 5–6)
+- [ ] Dashboard Metrik Global (Impact Tracker)
+- [ ] Notifikasi job match
+- [ ] Admin panel (kelola kursus & lowongan)
+- [ ] Deployment (Docker / Hostinger)
+
+---
+
+## ⚙️ Environment Variables
+
+### Backend (`backend/.env`)
+```
+APP_NAME=SkillBridge
+APP_URL=http://localhost:8000
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=skillbridge_db
+DB_USERNAME=root
+DB_PASSWORD=
+SANCTUM_STATEFUL_DOMAINS=localhost:5173
+OPENAI_API_KEY=your_key_here
+FRONTEND_URL=http://localhost:5173
+```
+
+### Frontend (`frontend/.env`)
+```
+VITE_API_URL=http://localhost:8000/api
+```
+
+---
+
+## 📦 Dependencies
+
+### Backend (Laravel)
+```bash
+composer require laravel/sanctum
+composer require openai-php/laravel  # untuk AI integration
+```
+
+### Frontend (React)
+```bash
+npm install axios react-router-dom
+npm install @radix-ui/react-accordion  # UI primitives
+npm install lucide-react               # icons
+```
+
+---
+
+*Dokumen ini berfungsi sebagai blueprint pengembangan SkillBridge. Perbarui sesuai kebutuhan di setiap sprint.*
