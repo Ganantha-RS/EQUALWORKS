@@ -1,11 +1,11 @@
-# SkillBridge — Inclusive Digital Skills Platform
+# EqualWorks — Inclusive Digital Skills Platform
 ### Project Documentation & Development Blueprint
 
 ---
 
 ## 📌 Project Overview
 
-**SkillBridge** adalah platform pembelajaran digital inklusif yang dirancang untuk memberdayakan individu dengan keterbatasan akses — baik fisik, visual, maupun ekonomi — agar dapat menguasai keterampilan digital dan terhubung dengan peluang kerja jarak jauh secara global.
+**EqualWorks** adalah platform pembelajaran digital inklusif yang dirancang untuk memberdayakan individu dengan keterbatasan akses — baik fisik, visual, maupun ekonomi — agar dapat menguasai keterampilan digital dan terhubung dengan peluang kerja jarak jauh secara global.
 
 **Tech Stack:**
 - **Frontend:** React.js (Vite)
