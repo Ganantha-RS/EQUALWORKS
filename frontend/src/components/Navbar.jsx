@@ -1,20 +1,19 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
+import { useAuth } from "../context/AuthContext";
 
 const navLinks = [
-  { label: "Features", href: "#" },
-  { label: "Learning", href: "#" },
-  { label: "Jobs", href: "#" },
-  { label: "Impact", href: "#" },
-  { label: "FAQ", href: "#" },
+  { label: "Features", href: "/#features" },
+  { label: "Learning", href: "/courses" },
+  { label: "AI Builder", href: "/ai-builder" },
+  { label: "Jobs", href: "/jobs" },
+  { label: "Dashboard", href: "/dashboard" },
 ];
 
 const NavLink = ({ label, href }) => {
-  const [hovered, setHovered] = useState(false);
-
   return (
    <motion.a
     href={href}
@@ -173,6 +172,7 @@ const ShimmerButton = ({ children, href, onClick }) => {
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 12);
@@ -205,7 +205,9 @@ export default function Navbar() {
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 400, damping: 20 }}
             >
-              <img className="w-42" src="image/Logo.png" alt="" />
+              <a href="/">
+                <img className="w-42" src="/image/Logo.png" alt="SkillBridge" />
+              </a>
             </motion.div>
 
             <div className="hidden md:flex items-center gap-6 lg:gap-8 ">
@@ -222,8 +224,9 @@ export default function Navbar() {
             </div>
 
             <div className="hidden md:flex items-center gap-3">
-              <motion.a
-                href="#"
+              {user ? (
+                <motion.button
+                onClick={logout}
                 className="px-10 py-3 text-sm font-medium text-gray-800 border border-orange-400 rounded-xl"
                 whileHover={{
                   backgroundColor: "#fff7ed",
@@ -234,10 +237,26 @@ export default function Navbar() {
                 whileTap={{ scale: 0.97 }}
                 transition={{ duration: 0.18 }}
               >
-                Login
-              </motion.a>
+                Logout
+              </motion.button>
+              ) : (
+                <motion.a
+                  href="/login"
+                  className="px-10 py-3 text-sm font-medium text-gray-800 border border-orange-400 rounded-xl"
+                  whileHover={{
+                    backgroundColor: "#fff7ed",
+                    borderColor: "#f97316",
+                    color: "#f97316",
+                    scale: 1.03,
+                  }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ duration: 0.18 }}
+                >
+                  Login
+                </motion.a>
+              )}
 
-              <ShimmerButton href="#">Get Started</ShimmerButton>
+              <ShimmerButton href={user ? "/dashboard" : "/register"}>{user ? "Dashboard" : "Get Started"}</ShimmerButton>
             </div>
 
             <motion.button
@@ -267,12 +286,14 @@ export default function Navbar() {
 
             <motion.div
               className="fixed top-[70px] left-0 right-0 z-50 bg-white md:hidden border-t border-gray-100"
-              style={{ boxShadow: "0 20px 60px rgba(236,105,16,0.12), 0 4px 20px rgba(0,0,0,0.08)" }}
               initial={{ opacity: 0, y: -20, scaleY: 0.95 }}
               animate={{ opacity: 1, y: 0, scaleY: 1 }}
               exit={{ opacity: 0, y: -16, scaleY: 0.96 }}
               transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-              style={{ transformOrigin: "top center" }}
+              style={{
+                boxShadow: "0 20px 60px rgba(236,105,16,0.12), 0 4px 20px rgba(0,0,0,0.08)",
+                transformOrigin: "top center",
+              }}
             >
               <div className="px-4 pt-4 pb-6 flex flex-col gap-1">
                 {navLinks.map((link, i) => (
@@ -290,24 +311,38 @@ export default function Navbar() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.35, ease: "easeOut" }}
                 >
+                  {user ? (
+                    <motion.button
+                      onClick={() => {
+                        logout();
+                        setMenuOpen(false);
+                      }}
+                      className="w-full text-center py-3 text-sm font-medium text-gray-800 border border-orange-400 rounded-full hover:bg-orange-50 hover:text-orange-500 transition-colors"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      Logout
+                    </motion.button>
+                  ) : (
+                    <motion.a
+                      href="/login"
+                      onClick={() => setMenuOpen(false)}
+                      className="w-full text-center py-3 text-sm font-medium text-gray-800 border border-orange-400 rounded-full hover:bg-orange-50 hover:text-orange-500 transition-colors"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      Login
+                    </motion.a>
+                  )}
                   <motion.a
-                    href="#"
-                    onClick={() => setMenuOpen(false)}
-                    className="w-full text-center py-3 text-sm font-medium text-gray-800 border border-orange-400 rounded-full hover:bg-orange-50 hover:text-orange-500 transition-colors"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    Login
-                  </motion.a>
-                  <motion.a
-                    href="#"
+                    href={user ? "/dashboard" : "/register"}
                     onClick={() => setMenuOpen(false)}
                     className="relative w-full text-center py-3 text-sm font-semibold text-white rounded-full overflow-hidden"
                     style={{ background: "linear-gradient(135deg, #EC6910, #ffd500)" }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                   >
-                    Get Started
+                    {user ? "Open Dashboard" : "Get Started"}
                   </motion.a>
                 </motion.div>
               </div>

@@ -250,13 +250,13 @@ export default function SmartJobMatching() {
                 transform: visible ? "translateY(0)" : "translateY(16px)",
               }}
             >
-              <button className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-white text-sm font-semibold shadow-md hover:shadow-orange-200 hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95">
+              <a href="/jobs" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-white text-sm font-semibold shadow-md hover:shadow-orange-200 hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95">
                 View Jobs Matches
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
-              </button>
+              </a>
             </div>
           </div>
         </div>

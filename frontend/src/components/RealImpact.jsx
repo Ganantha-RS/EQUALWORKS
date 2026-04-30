@@ -87,7 +87,6 @@ export default function RealImpact() {
 
   return (
     <section
-      style={{ fontFamily: "'Poppins', sans-serif" }}
       ref={secRef}
       className="relative w-full overflow-hidden py-16 sm:py-20 mt-30"
       style={{

@@ -185,7 +185,7 @@ export default function HeroSection() {
               transition={{ delay: 0.5, duration: 0.5 }}
             >
               <motion.a
-                href="#"
+                href="/courses"
                 className="px-7 py-3 text-white font-semibold text-sm rounded-xl cursor-pointer"
                 style={{
                   background: "linear-gradient(135deg, #EC6910, #ffd500)",
@@ -199,7 +199,7 @@ export default function HeroSection() {
               </motion.a>
 
               <motion.a
-                href="#"
+                href="/jobs"
                 className="px-7 py-3 font-semibold text-sm rounded-xl cursor-pointer"
                 style={{
                   background: "transparent",
